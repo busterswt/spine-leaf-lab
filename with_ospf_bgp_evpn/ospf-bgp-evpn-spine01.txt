@@ -1,0 +1,400 @@
+!Command: show running-config
+!Running configuration last done at: Thu Sep 28 03:41:39 2023
+!Time: Thu Sep 28 03:44:14 2023
+
+version 9.3(12) Bios:version
+hostname spine01
+policy-map type network-qos jumbo
+  class type network-qos class-default
+    mtu 9216
+vdc spine01 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature scp-server
+cfs eth distribute
+nv overlay evpn
+feature ospf
+feature bgp
+feature fabric forwarding
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lacp
+feature vpc
+feature lldp
+feature nv overlay
+
+logging level aaa 6
+logging level acllog 6
+logging level aclmgr 6
+logging level adbm 6
+logging level bootvar 6
+logging level callhome 6
+logging level capability 6
+logging level cdp 6
+logging level cert_enroll 6
+logging level cfs 6
+logging level clk_mgr 6
+logging level confcheck 6
+logging level copp 6
+logging level dhclient 6
+logging level diag_port_lb 6
+logging level diagmgr 6
+logging level eltm 6
+logging level eth_dstats 6
+logging level eth_port_channel 6
+logging level ethpm 6
+logging level evmc 6
+logging level evms 6
+logging level feature-mgr 6
+logging level fs-daemon 6
+logging level gpixm 6
+logging level ifmgr 6
+logging level interface-vlan 6
+logging level ipfib 6
+logging level ipqosmgr 6
+logging level l2fm 6
+logging level l2pt 6
+logging level lim 6
+logging level mmode 6
+logging level module 6
+logging level monitor 6
+logging level mvsh 6
+logging level ntp 6
+logging level otm 6
+logging level pfstat 6
+logging level pixm 6
+logging level platform 6
+logging level plcmgr 6
+logging level pltfm_config 6
+logging level plugin 6
+logging level radius 6
+logging level res_mgr 6
+logging level sal 6
+logging level securityd 6
+logging level session-mgr 6
+logging level sksd 6
+logging level snmpd 3
+logging level snmpmib_proc 6
+logging level spanning-tree 6
+logging level stripcl 6
+logging level template_manager 6
+logging level ufdm 6
+logging level virtual-service 6
+logging level vlan_mgr 6
+logging level vshd 6
+logging level xmlma 6
+logging level urib 6
+logging level igmp 6
+logging level mrib 6
+logging level m6rib 6
+logging level arp 6
+logging level clis 6
+logging level netstack 6
+logging level icmpv6 6
+logging level adjmgr 6
+logging level ecp 6
+logging level rpm 6
+logging level smm 6
+logging level u6rib 6
+
+no password strength-check
+username admin password 5 $5$FNHEFD$c5JDa3/ceAaTMnNTDxKJkqZxCtOw4ZbBUWz71QstJU3  role network-admin
+
+banner motd #
+               \|||/
+               (o o)
+------------ooO-(_)-Ooo------------
+Device: spine01 (192.168.45.51)
+Device::Access::Public on Nexus9000 C9300v Chassis
+
+Location: homelab
+Notes: OSPCv2
+
+-----------------------------------
+#
+
+no ip domain-lookup
+spanning-tree mode mst
+errdisable recovery interval 30
+errdisable recovery cause link-flap
+errdisable recovery cause bpduguard
+system qos
+  service-policy type network-qos jumbo
+copp profile strict
+ip tftp source-interface mgmt0
+snmp-server user admin network-admin auth md5 21709C805801737109A8D6AB89794F0773DE priv 5335E3B7663D642D15ACD8DC636F154A87CA localizedV2key
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps aaa server-state-change
+snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps link cisco-xcvr-mon-status-chg
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+ntp source-interface mgmt0
+ntp access-group peer ALLOW
+ntp access-group serve DROP
+
+ip route 0.0.0.0/0 192.168.45.1
+no ip source-route
+no ip igmp snooping
+vlan 1,15
+vlan 15
+  name oob_mgmt
+
+spanning-tree mst configuration
+  name REGION-1
+  revision 1
+  instance 1 vlan 1-4094
+vrf context management
+  ip route 0.0.0.0/0 192.168.45.1
+no hardware access-list update atomic
+hardware access-list update default-result permit
+no lldp tlv-select system-description
+no lldp tlv-select system-capabilities
+no lldp tlv-select management-address v4
+no lldp tlv-select port-vlan
+no lldp tlv-select management-address v6
+
+
+interface Vlan1
+
+interface Vlan15
+  description management & nxapi
+  no shutdown
+  ip address 192.168.45.51/24
+
+interface Ethernet1/1
+  description x xk31-1
+  no switchport
+  mtu 9216
+  medium p2p
+  ip unnumbered loopback0
+  ip router ospf OSPF_UNDERLAY_NET area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/2
+  description x xk31-2
+  no switchport
+  mtu 9216
+  medium p2p
+  ip unnumbered loopback0
+  ip router ospf OSPF_UNDERLAY_NET area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/3
+  description x xk32-1
+  no switchport
+  mtu 9216
+  medium p2p
+  ip unnumbered loopback0
+  ip router ospf OSPF_UNDERLAY_NET area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/4
+  description x xk32-2
+  no switchport
+  mtu 9216
+  medium p2p
+  ip unnumbered loopback0
+  ip router ospf OSPF_UNDERLAY_NET area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/5
+  description x mgmt01
+  switchport access vlan 15
+
+interface Ethernet1/6
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface Ethernet1/55
+
+interface Ethernet1/56
+
+interface Ethernet1/57
+
+interface Ethernet1/58
+
+interface Ethernet1/59
+
+interface Ethernet1/60
+
+interface Ethernet1/61
+
+interface Ethernet1/62
+
+interface Ethernet1/63
+
+interface Ethernet1/64
+
+interface mgmt0
+  description management & nxapi
+  vrf member management
+
+interface loopback0
+  description Loopback
+  ip address 192.168.0.1/32
+  ip router ospf OSPF_UNDERLAY_NET area 0.0.0.0
+icam monitor scale
+
+cli alias name wr copy running-config startup-config
+line console
+line vty
+router ospf OSPF_UNDERLAY_NET
+  log-adjacency-changes
+router bgp 64520
+  log-neighbor-changes
+  address-family ipv4 unicast
+  address-family l2vpn evpn
+    retain route-target all
+  template peer VXLAN_LEAF
+    remote-as 64520
+    update-source loopback0
+    address-family ipv4 unicast
+      send-community extended
+      route-reflector-client
+      soft-reconfiguration inbound
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-reflector-client
+  neighbor 192.168.0.3
+    inherit peer VXLAN_LEAF
+  neighbor 192.168.0.4
+    inherit peer VXLAN_LEAF
+  neighbor 192.168.0.5
+    inherit peer VXLAN_LEAF
+  neighbor 192.168.0.6
+    inherit peer VXLAN_LEAF
+hardware ip glean throttle
+hardware ip glean throttle maximum 32767
+ip tcp path-mtu-discovery
+logging level l3vm 6
+
+logging source-interface mgmt0
+logging level user 6
+logging level mail 6
+logging level syslog 6
+logging level lpr 6
+logging level news 6
+logging level uucp 6
+logging level cron 6
+logging level ftp 6
+logging level local0 6
+logging level local1 6
+logging level local2 6
+logging level local3 6
+logging level local4 6
+logging level local5 6
+logging level local6 6
+logging level local7 6
+boot nxos bootflash:/nxos.9.3.12.bin
